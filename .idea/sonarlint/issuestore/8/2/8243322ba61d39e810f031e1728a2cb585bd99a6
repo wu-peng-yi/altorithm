@@ -1,0 +1,9 @@
+
+b	java:S101	"MRename this class name to match the regular expression '^[A-Z][a-zA-Z0-9]*$'.(ÃÕç±
+—
+java:S1186
+"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(Çµí‘
+H
+java:S1481"-Remove this unused "arraySum" local variable.(ôÏžëþÿÿÿÿ
+F
+java:S1481"+Remove this unused "setSum" local variable.(Ý¢Ñ–øÿÿÿÿ

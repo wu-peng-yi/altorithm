@@ -1,0 +1,15 @@
+
+g	java:S101	"MRename this class name to match the regular expression '^[A-Z][a-zA-Z0-9]*$'.(ÐÇœòøÿÿÿÿ
+—
+java:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(îëÉ÷
+S
+java:S1854"8Remove this useless assignment to local variable "find".(ï³Ý€úÿÿÿÿ
+D
+java:S1481")Remove this unused "find" local variable.(ï³Ý€úÿÿÿÿ
+g	java:S101	"MRename this class name to match the regular expression '^[A-Z][a-zA-Z0-9]*$'.(ÐÇœòøÿÿÿÿ
+—
+java:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(îëÉ÷
+S
+java:S1854"8Remove this useless assignment to local variable "find".(ï³Ý€úÿÿÿÿ
+D
+java:S1481")Remove this unused "find" local variable.(ï³Ý€úÿÿÿÿ
