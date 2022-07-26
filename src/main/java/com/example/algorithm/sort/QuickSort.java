@@ -18,7 +18,7 @@ public class QuickSort {
         qSort(nums, index + 1, end);
     }
 
-    private static int partition(int[] nums, int start, int end) {
+    public static int partition(int[] nums, int start, int end) {
         //以第一个元素作为中心点
         int pivot = nums[start];
         //双指针
@@ -48,7 +48,7 @@ public class QuickSort {
         return position;
     }
 
-    private static void swap(int[] nums, int left, int right) {
+    public static void swap(int[] nums, int left, int right) {
         int temp = nums[left];
         nums[left] = nums[right];
         nums[right] = temp;
