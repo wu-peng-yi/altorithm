@@ -5,8 +5,8 @@ package com.example.algorithm.linkedlist;
  * @date 2022-07-17
  */
 public class ListNode {
-    int val;
-    ListNode next;
+    public int val;
+    public ListNode next;
 
     public ListNode() {
     }
