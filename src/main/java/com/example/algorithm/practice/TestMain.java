@@ -19,6 +19,46 @@ public class TestMain {
         }
     }
 
+    /**
+     * 左旋转字符串
+     * @param s
+     * @param n
+     * @return
+     */
+    public String reverseLeftWords(String s, int n) {
+        int length = s.length();
+        if (length == 0 || length == 1) {
+            return s;
+        }
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < length; i++) {
+            sb.append(s.charAt((n + i) + length) % length);
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 替换空格
+     * @param s
+     * @return
+     */
+    public String replaceSpace(String s) {
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) == ' ') {
+                sb.append("%20");
+            } else {
+                sb.append(s.charAt(i));
+            }
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 从尾到头打印链表
+     * @param head
+     * @return
+     */
     public int[] reversePrint(ListNode head) {
         Stack<Integer> stack = new Stack<>();
         while (head != null) {
@@ -69,6 +109,11 @@ public class TestMain {
 
     Map<Node, Node> cacheNodes = new HashMap<>();
 
+    /**
+     * 拷贝链表
+     * @param head
+     * @return
+     */
     public Node copyRandomList(Node head) {
         if (head == null) {
             return null;
