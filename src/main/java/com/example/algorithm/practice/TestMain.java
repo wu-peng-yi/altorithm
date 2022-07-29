@@ -8,19 +8,127 @@ public class TestMain {
 
     public static void main(String[] args) {
         TestMain testMain = new TestMain();
-        ListNode node = new ListNode(1);
-        ListNode listNode = new ListNode(3);
-        ListNode listNode1 = new ListNode(2);
-        listNode.next = listNode1;
-        node.next = listNode;
-        int[] res = testMain.reversePrint1(node);
-        for (int re : res) {
-            System.out.println(re);
-        }
+        int[] arr = new int[]{0,1,3,4,5};
+        int num = testMain.missingNumber(arr);
+        System.out.println(num);
     }
 
     /**
+     * 0 ~ (n - 1) 缺失的数字
+     * @param nums
+     * @return
+     */
+    public int missingNumber(int[] nums) {
+        int left = 0;
+        int right = nums.length - 1;
+        while (left <= right) {
+            int mid = (right - left) / 2 + left;
+            if (nums[mid] == mid) {
+                left = mid + 1;
+            } else if (nums[mid] > mid) {
+                right = mid - 1;
+            }
+        }
+        return left;
+    }
+
+    public int search1(int[] nums, int target) {
+        return helper(nums, target) - helper(nums, target - 1);
+    }
+
+    public int helper(int[] nums, int target) {
+        int left = 0;
+        int right = 0;
+        while (left <= right) {
+            int mid = (right - left) / 2 + left;
+            if (nums[mid] <= target) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return left;
+    }
+
+    /**
+     * 在排序数组中查找数字
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int search(int[] nums, int target) {
+        int count = 0;
+        int left = 0;
+        int right = nums.length - 1;
+        while (left <= right) {
+            int mid = (right - left) / 2 + left;
+            if (nums[mid] == target) {
+                count ++;
+                left = mid - 1;
+                right = mid + 1;
+                while (left >= 0 && nums[left] == target) {
+                    count ++;
+                    left--;
+                }
+                while (left < nums.length && nums[right] == target) {
+                    count ++;
+                    right++;
+                }
+                break;
+            } else if (nums[mid] < target) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * 找到重复的数字
+     *
+     * @param nums
+     * @return
+     */
+    public int findRepeatNumber1(int[] nums) {
+        int i = 0;
+        while (i < nums.length) {
+            if (nums[i] == i) {
+                i++;
+                continue;
+            }
+            if (nums[nums[i]] == nums[i]) {
+                return nums[i];
+            }
+            int temp = nums[i];
+            nums[i] = nums[temp];
+            nums[temp] = temp;
+        }
+        return -1;
+    }
+
+    /**
+     * 找到重复的数字
+     *
+     * @param nums
+     * @return
+     */
+    public int findRepeatNumber(int[] nums) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int num : nums) {
+            if (map.containsKey(num)) {
+                return num;
+            } else {
+                map.put(num, 1);
+            }
+        }
+        return -1;
+    }
+
+
+    /**
      * 左旋转字符串
+     *
      * @param s
      * @param n
      * @return
@@ -39,6 +147,7 @@ public class TestMain {
 
     /**
      * 替换空格
+     *
      * @param s
      * @return
      */
@@ -56,6 +165,7 @@ public class TestMain {
 
     /**
      * 从尾到头打印链表
+     *
      * @param head
      * @return
      */
@@ -111,6 +221,7 @@ public class TestMain {
 
     /**
      * 拷贝链表
+     *
      * @param head
      * @return
      */
