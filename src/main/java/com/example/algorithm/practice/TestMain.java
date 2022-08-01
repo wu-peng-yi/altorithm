@@ -8,13 +8,282 @@ public class TestMain {
 
     public static void main(String[] args) {
         TestMain testMain = new TestMain();
-        int[] arr = new int[]{0,1,3,4,5};
-        int num = testMain.missingNumber(arr);
-        System.out.println(num);
+        System.out.println(testMain.test(5, 10, new int[]{1,-1,1,-1,-1},
+                new int[]{100,10,100,10,100},
+                new int[]{4,4,4,4,4}));
+    }
+
+    public int test(int n, int m, int[] an, int[] bn, int[] cn) {
+        int[][] dp = new int[n + 1][m + 1];
+        for (int i = 0; i <= m; i++) {
+            dp[0][i] = 1500;
+        }
+        /**
+         * i == 2 j == 4
+         * dp[1][4] = 1600
+         * dp[1][0] = 1501 + 10
+         */
+        for (int i = 1; i <= n; i++) {
+            for (int j = 0; j <= m; j++) {
+                if (j >= cn[i - 1]) {
+                    int x = j - cn[i - 1];
+                    int t = dp[i - 1][j - cn[i - 1]];
+                    int t1 = Math.max(an[i - 1],bn[i - 1]);
+                    int m1 = dp[i - 1][j];
+                    dp[i][j] = Math.max(dp[i - 1][j], (dp[i - 1][j - cn[i - 1]] + Math.max(an[i - 1],bn[i - 1])));
+                } else {
+                    dp[i][j] = dp[i - 1][j] + an[i - 1];
+                }
+            }
+        }
+        System.out.println();
+        return dp[n][m];
+    }
+
+    /**
+     * 是否对称树
+     *
+     * @param root
+     * @return
+     */
+    public boolean isSymmetric(TreeNode root) {
+        if (root == null) {
+            return true;
+        }
+        return recur(root.left, root.right);
+    }
+
+    private boolean recur(TreeNode left, TreeNode right) {
+        if (left == null && right == null) {
+            return true;
+        }
+        if (left == null || right == null) {
+            return false;
+        }
+        if (left.val != right.val) {
+            return false;
+        }
+
+        return recur(left.left, right.right) && recur(left.right, right.left);
+    }
+
+    /**
+     * 二叉树的镜像
+     *
+     * @param root
+     * @return
+     */
+    public TreeNode mirrorTree(TreeNode root) {
+        if (root == null) {
+            return root;
+        }
+        TreeNode temp = root.right;
+        root.right = root.left;
+        root.left = temp;
+        mirrorTree(root.left);
+        mirrorTree(root.right);
+
+        return root;
+    }
+
+    /**
+     * 树的子结构
+     */
+    public boolean isSubStructure(TreeNode A, TreeNode B) {
+        if (A == null || B == null) {
+            return false;
+        }
+        return recursion(A, B) || isSubStructure(A.left, B) || isSubStructure(A.right, B);
+    }
+
+    private boolean recursion(TreeNode A, TreeNode B) {
+        if (B == null) {
+            return true;
+        }
+        if (A == null) {
+            return false;
+        }
+        if (A.val != B.val) {
+            return false;
+        }
+        return recursion(A.left, B.left) && recursion(A.right, B.right);
+    }
+
+
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> res = new ArrayList<>();
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(root);
+        boolean flag = true;
+        while (!queue.isEmpty()) {
+            LinkedList<Integer> temp = new LinkedList<>();
+            int queueSize = queue.size();
+
+            for (int i = queueSize; i > 0; i--) {
+                TreeNode tempNode = queue.poll();
+                if (flag) {
+                    temp.add(tempNode.val);
+                } else {
+                    temp.addFirst(tempNode.val);
+                }
+                if (tempNode.left != null) {
+                    queue.offer(tempNode.left);
+                }
+                if (tempNode.right != null) {
+                    queue.offer(tempNode.right);
+                }
+            }
+            res.add(temp);
+            flag = !flag;
+        }
+        return res;
+    }
+
+    /**
+     * 从上到下打印二叉树II
+     *
+     * @param root
+     * @return
+     */
+    public List<List<Integer>> levelOrder2(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> res = new ArrayList<>();
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(root);
+        while (!queue.isEmpty()) {
+            List<Integer> temp = new ArrayList<>();
+            for (int i = queue.size(); i > 0; i--) {
+                TreeNode tempNode = queue.poll();
+                temp.add(tempNode.val);
+                if (tempNode.left != null) {
+                    queue.offer(tempNode.left);
+                }
+                if (tempNode.right != null) {
+                    queue.offer(tempNode.right);
+                }
+            }
+            res.add(temp);
+        }
+        return res;
+    }
+
+    /**
+     * 从上到下打印二叉树
+     *
+     * @param root
+     * @return
+     */
+    public int[] levelOrder1(TreeNode root) {
+        Deque<TreeNode> queue = new LinkedList<>();
+        if (root == null) {
+            return new int[]{};
+        }
+        queue.offer(root);
+        List<Integer> temp = new ArrayList<>();
+        while (!queue.isEmpty()) {
+            TreeNode tempNode = queue.poll();
+            temp.add(tempNode.val);
+
+            if (tempNode.left != null) {
+                queue.offer(tempNode.left);
+            }
+            if (tempNode.right != null) {
+                queue.offer(tempNode.right);
+            }
+        }
+        int[] res = new int[temp.size()];
+        for (int i = 0; i < temp.size(); i++) {
+            res[i] = temp.get(i);
+        }
+        return res;
+    }
+
+
+    /**
+     * 第一个只出现一次的字符
+     *
+     * @param s
+     * @return
+     */
+    public char firstUniqChar(String s) {
+        Map<Character, Integer> map = new LinkedHashMap<>();
+
+        for (char c : s.toCharArray()) {
+            map.put(c, map.getOrDefault(c, 0) + 1);
+        }
+        for (Map.Entry<Character, Integer> entry : map.entrySet()) {
+            if (entry.getValue() == 1) {
+                return entry.getKey();
+            }
+        }
+        return ' ';
+    }
+
+    /**
+     * 旋转数组重的最小数字
+     *
+     * @param numbers
+     * @return
+     */
+    public int minArray(int[] numbers) {
+        int n = numbers.length;
+        int l = 0;
+        int r = n - 1;
+        while (l < r) {
+            int mid = (r - l) / 2 + l;
+            if (numbers[mid] < numbers[r]) {
+                r = mid;
+            } else if (numbers[mid] > numbers[r]) {
+                l = mid + 1;
+            } else {
+                r--;
+            }
+        }
+        return numbers[l];
+    }
+
+    /**
+     * 二维数组中的查找
+     *
+     * @param matrix
+     * @param target
+     * @return
+     */
+    public boolean findNumberIn2DArray(int[][] matrix, int target) {
+        int n = matrix.length;
+        int m = matrix[0].length;
+        if (n == 0 || m == 0) {
+            return false;
+        }
+        int rowIndex = 0;
+        for (int i = 0; i < n; i++) {
+            if (matrix[i][0] <= target && matrix[i][m - 1] >= target) {
+                rowIndex = i;
+                int l = 0;
+                int r = m - 1;
+                while (l <= r) {
+                    int mid = (r - l) / 2 + l;
+                    if (matrix[rowIndex][mid] == target) {
+                        return true;
+                    } else if (matrix[rowIndex][mid] < target) {
+                        l = mid + 1;
+                    } else {
+                        r = mid - 1;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     /**
      * 0 ~ (n - 1) 缺失的数字
+     *
      * @param nums
      * @return
      */
@@ -52,6 +321,7 @@ public class TestMain {
 
     /**
      * 在排序数组中查找数字
+     *
      * @param nums
      * @param target
      * @return
@@ -63,15 +333,15 @@ public class TestMain {
         while (left <= right) {
             int mid = (right - left) / 2 + left;
             if (nums[mid] == target) {
-                count ++;
+                count++;
                 left = mid - 1;
                 right = mid + 1;
                 while (left >= 0 && nums[left] == target) {
-                    count ++;
+                    count++;
                     left--;
                 }
                 while (left < nums.length && nums[right] == target) {
-                    count ++;
+                    count++;
                     right++;
                 }
                 break;
@@ -240,6 +510,16 @@ public class TestMain {
     }
 }
 
+class TreeNode {
+    int val;
+    TreeNode left;
+    TreeNode right;
+
+    public TreeNode(int val) {
+        this.val = val;
+    }
+}
+
 class Node {
     int val;
     Node next;
@@ -251,3 +531,5 @@ class Node {
         this.random = null;
     }
 }
+
+
