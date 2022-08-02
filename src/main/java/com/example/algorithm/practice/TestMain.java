@@ -13,6 +13,67 @@ public class TestMain {
                 new int[]{4,4,4,4,4}));
     }
 
+    /**
+     * 股票最大利润
+     * @param prices
+     * @return
+     */
+    public int maxProfit(int[] prices) {
+        if (prices.length <= 1) {
+            return 0;
+        }
+        int[] dp = new int[prices.length + 1];
+        int minPrice = prices[0];
+        int maxProfit = 0;
+        for (int i = 1; i < prices.length + 1; i++) {
+            minPrice = Math.min(minPrice, prices[i - 1]);
+            maxProfit = Math.max(maxProfit,prices[i - 1] - minPrice);
+        }
+        return maxProfit;
+    }
+
+    /**
+     * 跳台阶
+     * @param n
+     * @return
+     */
+    public int numWays(int n) {
+        if (n == 0) {
+            return 1;
+        }
+        if (n == 1) {
+            return 1;
+        }
+        int[] dp = new int[n + 1];
+        dp[0] = 1;
+        dp[1] = 1;
+        for (int i = 2; i < n + 1; i++) {
+            dp[i] = (dp[i - 1] + dp[i - 2]) % 1000000007;
+        }
+        return dp[n];
+    }
+
+    /**
+     * 斐波那契数列
+     * @param n
+     * @return
+     */
+    public int fib(int n) {
+        if (n == 0) {
+            return 0;
+        }
+        if (n == 1) {
+            return 1;
+        }
+        int[] dp = new int[n + 1];
+        dp[0] = 0;
+        dp[1] = 1;
+        for (int i = 2; i < n + 1; i++) {
+            dp[i] = dp[i - 1] + dp[i - 2];
+        }
+        return dp[n];
+    }
+
     public int test(int n, int m, int[] an, int[] bn, int[] cn) {
         int[][] dp = new int[n + 1][m + 1];
         for (int i = 0; i <= m; i++) {
