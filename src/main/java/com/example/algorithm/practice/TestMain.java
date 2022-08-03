@@ -8,9 +8,52 @@ public class TestMain {
 
     public static void main(String[] args) {
         TestMain testMain = new TestMain();
-        System.out.println(testMain.test(5, 10, new int[]{1,-1,1,-1,-1},
-                new int[]{100,10,100,10,100},
-                new int[]{4,4,4,4,4}));
+        int[][] arr = new int[][]{
+                {1,3,1},
+                {1,5,1},
+                {4,2,1}
+        };
+        System.out.println(testMain.maxValue(arr));
+    }
+
+    /**
+     *  礼物的最大价值
+     * @param grid
+     * @return
+     */
+    public int maxValue(int[][] grid) {
+        if (grid.length == 0) {
+            return 0;
+        }
+        int n = grid.length;
+        int m = grid[0].length;
+        int[][] dp = new int[n + 1][m + 1];
+        for (int i = 1; i < n + 1; i++) {
+            for (int j = 1; j < m + 1; j++) {
+                dp[i][j] = grid[i - 1][j - 1] + Math.max(dp[i][j - 1],dp[i - 1][j]);
+            }
+        }
+        return dp[n][m];
+    }
+
+    /**
+     * 连续子数组的最大和
+     * @param nums
+     * @return
+     */
+    public int maxSubArray(int[] nums) {
+        if (nums.length == 0) {
+            return 0;
+        }
+        int[] dp = new int[nums.length];
+        for (int i = 1; i < nums.length; i++) {
+            dp[i] = Math.max(dp[i - 1] + nums[i], nums[i]);
+        }
+        int max = Integer.MIN_VALUE;
+        for (int i = 0; i < nums.length; i++) {
+            max = Math.max(nums[i],max);
+        }
+        return max;
     }
 
     /**
