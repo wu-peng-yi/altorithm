@@ -9,15 +9,113 @@ public class TestMain {
     public static void main(String[] args) {
         TestMain testMain = new TestMain();
         int[][] arr = new int[][]{
-                {1,3,1},
-                {1,5,1},
-                {4,2,1}
+                {1, 3, 1},
+                {1, 5, 1},
+                {4, 2, 1}
         };
-        System.out.println(testMain.maxValue(arr));
+        System.out.println(testMain.lengthOfLongestSubstring("abcabcbb"));
+    }
+
+    public ListNode getKthFromEnd(ListNode head, int k) {
+        ListNode dummy = new ListNode(-1);
+        dummy.next = head;
+        ListNode slow = dummy;
+        ListNode fast = dummy;
+        for (int i = 0; i < k; i++) {
+            fast = fast.next;
+        }
+        while (fast.next != null) {
+            slow = slow.next;
+            fast = fast.next;
+        }
+        return slow.next;
+    }
+
+    public ListNode deleteNode(ListNode head, int val) {
+        ListNode dummy = new ListNode(-1);
+        dummy.next = head;
+        ListNode temp = dummy;
+        while (temp.next != null) {
+            if (temp.next.val == val) {
+                temp.next = temp.next.next;
+                break;
+            } else {
+                temp = temp.next;
+            }
+        }
+        return dummy.next;
+    }
+
+    public int lengthOfLongestSubstring1(String s) {
+        //存储字符与位置索引的关系
+        Map<Character, Integer> map = new HashMap<>();
+        int res = 0;
+        int temp = 0;
+
+        for (int i = 0; i < s.length(); i++) {
+            int j = map.getOrDefault(s.charAt(i), -1);
+            map.put(s.charAt(i), i);
+            temp = temp < i - j ? temp + 1 : i - j;
+            res = Math.max(res, temp);
+        }
+        return res;
     }
 
     /**
-     *  礼物的最大价值
+     * 最长不含重复字符的子字符串
+     *
+     * @param s
+     * @return
+     */
+    public int lengthOfLongestSubstring(String s) {
+        if (s.length() <= 0) {
+            return 0;
+        }
+        int length = s.length();
+        Map<Character, Integer> map = new HashMap<>();
+        int left = 0;
+        int right = 0;
+        int res = 0;
+        while (right < length) {
+            char c = s.charAt(right);
+            right++;
+            map.put(c, map.getOrDefault(c, 0) + 1);
+            while (map.get(c) > 1) {
+                char removeChar = s.charAt(left);
+                map.put(removeChar, map.get(removeChar) - 1);
+
+                left++;
+            }
+            res = Math.max(res, right - left);
+        }
+        return res;
+    }
+
+    /**
+     * 把数字翻译成字符串
+     *
+     * @param num
+     * @return
+     */
+    public int translateNum(int num) {
+        if (num < 0) {
+            return 0;
+        }
+        String s = String.valueOf(num);
+        int n = s.length();
+        int[] dp = new int[n + 1];
+        dp[0] = 1;
+        dp[1] = 1;
+        for (int i = 2; i < n + 1; i++) {
+            String temp = s.substring(i - 2, i);
+            dp[i] = (temp.compareTo("10") >= 0 && temp.compareTo("25") <= 0) ? dp[i - 2] + dp[i - 1] : dp[i - 1];
+        }
+        return dp[n];
+    }
+
+    /**
+     * 礼物的最大价值
+     *
      * @param grid
      * @return
      */
@@ -30,7 +128,7 @@ public class TestMain {
         int[][] dp = new int[n + 1][m + 1];
         for (int i = 1; i < n + 1; i++) {
             for (int j = 1; j < m + 1; j++) {
-                dp[i][j] = grid[i - 1][j - 1] + Math.max(dp[i][j - 1],dp[i - 1][j]);
+                dp[i][j] = grid[i - 1][j - 1] + Math.max(dp[i][j - 1], dp[i - 1][j]);
             }
         }
         return dp[n][m];
@@ -38,6 +136,7 @@ public class TestMain {
 
     /**
      * 连续子数组的最大和
+     *
      * @param nums
      * @return
      */
@@ -51,13 +150,14 @@ public class TestMain {
         }
         int max = Integer.MIN_VALUE;
         for (int i = 0; i < nums.length; i++) {
-            max = Math.max(nums[i],max);
+            max = Math.max(nums[i], max);
         }
         return max;
     }
 
     /**
      * 股票最大利润
+     *
      * @param prices
      * @return
      */
@@ -70,13 +170,14 @@ public class TestMain {
         int maxProfit = 0;
         for (int i = 1; i < prices.length + 1; i++) {
             minPrice = Math.min(minPrice, prices[i - 1]);
-            maxProfit = Math.max(maxProfit,prices[i - 1] - minPrice);
+            maxProfit = Math.max(maxProfit, prices[i - 1] - minPrice);
         }
         return maxProfit;
     }
 
     /**
      * 跳台阶
+     *
      * @param n
      * @return
      */
@@ -98,6 +199,7 @@ public class TestMain {
 
     /**
      * 斐波那契数列
+     *
      * @param n
      * @return
      */
@@ -132,9 +234,9 @@ public class TestMain {
                 if (j >= cn[i - 1]) {
                     int x = j - cn[i - 1];
                     int t = dp[i - 1][j - cn[i - 1]];
-                    int t1 = Math.max(an[i - 1],bn[i - 1]);
+                    int t1 = Math.max(an[i - 1], bn[i - 1]);
                     int m1 = dp[i - 1][j];
-                    dp[i][j] = Math.max(dp[i - 1][j], (dp[i - 1][j - cn[i - 1]] + Math.max(an[i - 1],bn[i - 1])));
+                    dp[i][j] = Math.max(dp[i - 1][j], (dp[i - 1][j - cn[i - 1]] + Math.max(an[i - 1], bn[i - 1])));
                 } else {
                     dp[i][j] = dp[i - 1][j] + an[i - 1];
                 }
@@ -635,5 +737,7 @@ class Node {
         this.random = null;
     }
 }
+
+
 
 
