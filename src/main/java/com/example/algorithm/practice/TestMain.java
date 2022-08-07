@@ -13,7 +13,132 @@ public class TestMain {
                 {1, 5, 1},
                 {4, 2, 1}
         };
-        System.out.println(testMain.lengthOfLongestSubstring("abcabcbb"));
+//        System.out.println(testMain.lengthOfLongestSubstring("abcabcbb"));
+        System.out.println(testMain.reverseWords("  hello   world!  "));
+    }
+
+    /**
+     * 翻转单词顺序
+     *
+     * @param s
+     * @return
+     */
+    public String reverseWords(String s) {
+        s = s.trim();
+        int j = s.length() - 1;
+        int i = j;
+        StringBuffer sb = new StringBuffer();
+        while (i >= 0) {
+            while (i >= 0 && s.charAt(i) != ' ') {
+                i--;
+            }
+            sb.append(s.substring(i + 1, j + 1)).append(" ");
+            while (i >= 0 && s.charAt(i) == ' ') {
+                i--;
+            }
+            j = i;
+        }
+        return sb.toString().trim();
+    }
+
+    /**
+     * 和为s的两个数字
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int[] twoSum(int[] nums, int target) {
+        if (target == 0) {
+            return new int[]{0, 0};
+        }
+        int n = nums.length;
+        int left = 0;
+        int right = n - 1;
+        while (left < right) {
+            int res = nums[left] + nums[right];
+            if (res == target) {
+                return new int[]{nums[left], nums[right]};
+            } else if (res < target) {
+                left++;
+            } else {
+                right--;
+            }
+        }
+        return new int[]{0, 0};
+    }
+
+    /**
+     * 调整数组顺序，使奇数位于偶数前面
+     */
+    public int[] exchange(int[] nums) {
+        if (nums.length == 0) {
+            return nums;
+        }
+        int n = nums.length;
+        int left = 0;
+        int right = n - 1;
+        while (left < right) {
+            while (left < right && nums[left] % 2 == 1) {
+                left++;
+            }
+            while (left < right && nums[right] % 2 == 0) {
+                right--;
+            }
+            if (left < right) {
+                int temp = nums[left];
+                nums[left] = nums[right];
+                nums[right] = temp;
+                left++;
+                right--;
+            }
+        }
+        return nums;
+    }
+
+    /**
+     * 两个链表的第一个公共交点
+     *
+     * @param headA
+     * @param headB
+     * @return
+     */
+    ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        ListNode l1 = headA;
+        ListNode l2 = headB;
+        while (l1 != l2) {
+            l1 = l1 == null ? headB : l1.next;
+            l2 = l2 == null ? headA : l2.next;
+        }
+        return l1;
+    }
+
+    /**
+     * 合并两个有序链表
+     *
+     * @param l1
+     * @param l2
+     * @return
+     */
+    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+        ListNode dummy = new ListNode(-1);
+        ListNode t = dummy;
+        while (l1 != null && l2 != null) {
+            if (l1.val <= l2.val) {
+                t.next = l1;
+                l1 = l1.next;
+            } else {
+                t.next = l2;
+                l2 = l2.next;
+            }
+            t = t.next;
+        }
+        if (l1 != null) {
+            t.next = l1;
+        } else if (l2 != null) {
+            t.next = l2;
+        }
+        return dummy.next;
     }
 
     public ListNode getKthFromEnd(ListNode head, int k) {
