@@ -8,14 +8,534 @@ public class TestMain {
 
     public static void main(String[] args) {
         TestMain testMain = new TestMain();
-        int[][] arr = new int[][]{
-                {1, 3, 1},
-                {1, 5, 1},
-                {4, 2, 1}
-        };
-//        System.out.println(testMain.lengthOfLongestSubstring("abcabcbb"));
-        System.out.println(testMain.reverseWords("  hello   world!  "));
+        System.out.println(testMain.myPow(2.000, 10));
     }
+
+    /**
+     * 构建乘积数组
+     * @param a
+     * @return
+     */
+    public int[] constructArr(int[] a) {
+        int res[] = new int[a.length];
+        if (a == null || a.length == 0) {
+            return a;
+        }
+        int n = a.length;
+        int[] left = new int[n];
+        int[] right = new int[n];
+        left[0] = right[n - 1] = 1;
+        for (int i = 1; i < n; i++) {
+            left[i] = left[i - 1] * a[i - 1];
+        }
+        for (int i = n - 2; i >= 0; i--) {
+            right[i] = right[i + 1] * a[i + 1];
+        }
+        for (int i = 0; i < n; i++) {
+            res[i] = left[i] * right[i];
+        }
+        return res;
+    }
+
+    /**
+     * 数组中出现次数超过一半的数字
+     * @param nums
+     * @return
+     */
+    public int majorityElement(int[] nums) {
+        int votes = 0;
+        int x = 0;
+        for (int num : nums) {
+            if (votes == 0) {
+                x = num;
+            }
+            votes += num == x ? 1 : -1;
+        }
+        return x;
+    }
+
+    public int singleNumber(int[] nums) {
+        int ones = 0;
+        int twos = 0;
+        for (int num : nums) {
+            ones = ones ^ num & ~twos;
+            twos = twos ^ num & ~ones;
+        }
+        return ones;
+    }
+
+    /**
+     * 数组中数字出现的次数
+     *
+     * @param nums
+     * @return
+     */
+    public int[] singleNumbers(int[] nums) {
+        int n = 0;
+        for (int num : nums) {
+            n ^= num;
+        }
+        int m = 1;
+        while ((m & n) == 0) {
+            m <<= 1;
+        }
+        int x = 0, y = 0;
+        for (int num : nums) {
+            if ((num & m) == 0) {
+                x ^= num;
+            } else {
+                y ^= num;
+            }
+        }
+        return new int[]{x, y};
+    }
+
+    /**
+     * 不用乘除做加法
+     *
+     * @param a
+     * @param b
+     * @return
+     */
+    public int add(int a, int b) {
+        while (b != 0) {
+            int c = (a & b) << 1; //c 表示进位
+            a ^= b;  //异或存储无进位的结果
+            b = c;
+        }
+        return a;
+    }
+
+    /**
+     * 二进制中1的个数
+     *
+     * @param n
+     * @return
+     */
+    public int hammingWeight(int n) {
+        int res = 0;
+        while (n != 0) {
+            res += n & 1;
+            n >>>= 1;
+        }
+        return res;
+    }
+
+    /**
+     * 验证二叉树的后序遍历
+     *
+     * @param postorder
+     * @return
+     */
+    public boolean verifyPostorder(int[] postorder) {
+        return recur(postorder, 0, postorder.length - 1);
+    }
+
+    private boolean recur(int[] postorder, int left, int right) {
+        if (left >= right) {
+            return true;
+        }
+        int p = left;
+        while (postorder[p] < postorder[right]) {
+            p++;
+        }
+        int temp = p;
+        while (postorder[p] > postorder[right]) {
+            p++;
+        }
+        return p == right && recur(postorder, left, temp - 1) && recur(postorder, temp, right - 1);
+    }
+
+    /**
+     * 数值的整数次方
+     *
+     * @param x
+     * @param n
+     * @return
+     */
+
+    public double myPow(double x, int n) {
+        long n1 = n;
+        return n1 >= 0 ? quickMul(x, n1) : 1.0 / quickMul(x, -n1);
+    }
+
+    private double quickMul(double x, long n) {
+        if (n == 0) {
+            return 1.0;
+        }
+        double temp = quickMul(x, n / 2);
+        return n % 2 == 0 ? temp * temp : temp * temp * x;
+    }
+
+    /**
+     * 重建二叉树
+     *
+     * @param preorder 先序遍历结果
+     * @param inorder 中序遍历
+     * @return
+     */
+    public Map<Integer, Integer> treeMap = new HashMap<>();
+
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        int n = preorder.length;
+        for (int i = 0; i < n; i++) {
+            treeMap.put(inorder[i], i);
+        }
+        return recurBuildTree(preorder, inorder, 0, n - 1, 0, n - 1);
+    }
+
+    private TreeNode recurBuildTree(int[] preorder, int[] inorder, int pLeft, int pRight, int iLeft, int iRight) {
+        if (pLeft > pRight) {
+            return null;
+        }
+        //先序遍历的最左节点就是根结点
+        int rootVal = preorder[pLeft];
+        TreeNode root = new TreeNode(rootVal);
+        int inRootIndex = treeMap.get(rootVal);
+        int leftTreeSize = inRootIndex - iLeft;
+        root.left = recurBuildTree(preorder, inorder, pLeft + 1, pLeft + leftTreeSize, iLeft, inRootIndex - 1);
+        root.right = recurBuildTree(preorder, inorder, pLeft + leftTreeSize + 1, pRight, iLeft + 1, iRight);
+        return root;
+    }
+
+    /**
+     * 二叉树的最近公共祖先
+     *
+     * @param root
+     * @param p
+     * @param q
+     * @return
+     */
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if (root == null || root == p || root == q) {
+            return root;
+        }
+        TreeNode left = lowestCommonAncestor(root.left, p, q);
+        TreeNode right = lowestCommonAncestor(root.right, p, q);
+        if (left == null) {
+            return right;
+        } else if (right == null) {
+            return left;
+        } else {
+            return root;
+        }
+    }
+
+    /**
+     * 二叉搜索树的最近公共祖先
+     *
+     * @param root
+     * @param p
+     * @param q
+     * @return
+     */
+    public TreeNode lowestCommonAncestor1(TreeNode root, TreeNode p, TreeNode q) {
+        while (root != null) {
+            if (root.val < p.val && root.val < q.val) {
+                root = root.right;
+            } else if (root.val > p.val && root.val > q.val) {
+                root = root.left;
+            } else {
+                break;
+            }
+        }
+        return root;
+    }
+
+    public int res = 0;
+
+    public int sumNums(int n) {
+        boolean x = n > 1 && sumNums(n - 1) > 0;
+        res += n;
+        return res;
+    }
+
+    /**
+     * 是否为平衡二叉树
+     *
+     * @param root
+     * @return
+     */
+    public boolean isBalanced(TreeNode root) {
+        return recur(root) != -1;
+    }
+
+    private int recur(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        int left = recur(root.left);
+        if (left == -1) {
+            return -1;
+        }
+        int right = recur(root.right);
+        if (right == -1) {
+            return -1;
+        }
+        return Math.abs(right - left) < 2 ? Math.max(right, left) + 1 : -1;
+    }
+
+    /**
+     * 树的深度
+     *
+     * @param root
+     * @return
+     */
+    public int maxDepth(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));
+    }
+
+
+    /**
+     * 最小的K个数
+     *
+     * @param arr
+     * @param k
+     * @return
+     */
+    public int[] getLeastNumbers(int[] arr, int k) {
+        int n = arr.length;
+        quickSortArr(arr, 0, n - 1, k);
+        for (int i : arr) {
+            System.out.print(i + "\t");
+        }
+        return Arrays.copyOf(arr, k);
+    }
+
+    private void quickSortArr(int[] arr, int l, int r, int k) {
+        if (l >= r) {
+            return;
+        }
+        int temp = arr[l];
+        int i = l;
+        int j = r;
+        while (i < j) {
+            while (arr[j] > arr[l] && i < j) {
+                j--;
+            }
+            while (arr[i] < arr[l] && i < j) {
+                i++;
+            }
+            swap(arr, i, j);
+        }
+        swap(arr, i, l);
+        if (i == k - 1) {
+            return;
+        }
+        quickSortArr(arr, l, i - 1, k);
+        quickSortArr(arr, i + 1, r, k);
+    }
+
+    private void swap(int[] arr, int i, int j) {
+        int temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+    }
+
+    /**
+     * 扑克牌中的顺子
+     *
+     * @param nums
+     * @return
+     */
+    public boolean isStraight(int[] nums) {
+        Set<Integer> repeat = new HashSet<>();
+        int min = Integer.MAX_VALUE;
+        int max = Integer.MIN_VALUE;
+        for (int num : nums) {
+            if (num == 0) {
+                continue;
+            } else {
+                if (repeat.contains(num)) {
+                    return false;
+                }
+                min = Math.min(min, num);
+                max = Math.max(max, num);
+                repeat.add(num);
+            }
+        }
+        return max - min > 5;
+    }
+
+    /**
+     * 把数组排成最小的数
+     *
+     * @param nums
+     * @return
+     */
+    public String minNumber(int[] nums) {
+        String[] strs = new String[nums.length];
+        for (int i = 0; i < nums.length; i++)
+            strs[i] = String.valueOf(nums[i]);
+        quickSort(strs, 0, strs.length - 1);
+        for (String str : strs) {
+            System.out.print(str + "\t");
+        }
+        StringBuilder res = new StringBuilder();
+        for (String s : strs)
+            res.append(s);
+        return res.toString();
+    }
+
+    void quickSort(String[] strs, int l, int r) {
+        if (l >= r) return;
+        int i = l, j = r;
+        String tmp = strs[i];
+        while (i < j) {
+            while ((strs[j] + strs[l]).compareTo(strs[l] + strs[j]) >= 0 && i < j) j--;
+            while ((strs[i] + strs[l]).compareTo(strs[l] + strs[i]) <= 0 && i < j) i++;
+            tmp = strs[i];
+            strs[i] = strs[j];
+            strs[j] = tmp;
+        }
+        strs[i] = strs[l];
+        strs[l] = tmp;
+        quickSort(strs, l, i - 1);
+        quickSort(strs, i + 1, r);
+    }
+
+
+    /**
+     * 二叉搜索树第k大的节点
+     *
+     * @param root
+     * @param k
+     * @return
+     */
+    public int kthLargest(TreeNode root, int k) {
+        int res = 0;
+        kdfs(res, root, k);
+        return res;
+    }
+
+    private void kdfs(int res, TreeNode root, int k) {
+        if (root == null) {
+            return;
+        }
+        kdfs(res, root.right, k);
+        if (--k == 0) {
+            res = root.val;
+            return;
+        }
+        kdfs(res, root.left, k);
+    }
+
+
+    /**
+     * 二叉搜索树与双向链表
+     *
+     * @param root
+     * @return
+     */
+    public Node treeToDoublyList(Node root) {
+        if (root == null) {
+            return null;
+        }
+        return null;
+    }
+
+    public List<List<Integer>> pathSum(TreeNode root, int target) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> res = new ArrayList<>();
+        int sum = 0;
+        LinkedList<Integer> tempList = new LinkedList<>();
+        backtrackPath(res, root, target, tempList, sum);
+        return res;
+    }
+
+    private void backtrackPath(List<List<Integer>> res, TreeNode root, int target, LinkedList<Integer> tempList, int sum) {
+        if (root.left == null && root.right == null) {
+            if (sum + root.val == target) {
+                ArrayList<Integer> list = new ArrayList<>(tempList);
+                list.add(root.val);
+                res.add(list);
+            }
+        } else {
+            tempList.add(root.val);
+            sum += root.val;
+            if (sum >= target) {
+                return;
+            }
+            if (root.left != null) {
+                backtrackPath(res, root.left, target, tempList, sum);
+            }
+            if (root.right != null) {
+                backtrackPath(res, root.right, target, tempList, sum);
+            }
+            tempList.remove(tempList.size() - 1);
+            sum -= root.val;
+        }
+    }
+
+    /**
+     * 机器人的运动范围
+     *
+     * @param m
+     * @param n
+     * @param k
+     * @return
+     */
+    public int movingCount(int m, int n, int k) {
+        boolean[][] visited = new boolean[m][n];
+        return movingCount(m, n, k, 0, 0, visited);
+    }
+
+    private int movingCount(int m, int n, int k, int row, int col, boolean[][] visited) {
+        if (row < 0
+                || row >= m ||
+                col < 0 ||
+                col >= n
+                || bitNum(row) + bitNum(col) > k
+                || visited[row][col]
+        ) {
+            return 0;
+        }
+        visited[row][col] = true;
+        return 1 + movingCount(m, n, k, row + 1, col, visited) + movingCount(m, n, k, row, col + 1, visited);
+    }
+
+    private int bitNum(int num) {
+        int res = 0;
+        while (num != 0) {
+            res += num % 10;
+            num /= 10;
+        }
+        return res;
+    }
+
+
+    /**
+     * 矩阵中的路径
+     *
+     * @param board
+     * @param word
+     * @return
+     */
+    public boolean exist(char[][] board, String word) {
+        char[] words = word.toCharArray();
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[0].length; j++) {
+                if (dfs(board, words, i, j, 0)) return true;
+            }
+        }
+        return false;
+    }
+
+    boolean dfs(char[][] board, char[] word, int i, int j, int k) {
+        if (i >= board.length || i < 0 || j >= board[0].length || j < 0 || board[i][j] != word[k]) return false;
+        if (k == word.length - 1) return true;
+        board[i][j] = '\0';
+        boolean res = dfs(board, word, i + 1, j, k + 1) || dfs(board, word, i - 1, j, k + 1) ||
+                dfs(board, word, i, j + 1, k + 1) || dfs(board, word, i, j - 1, k + 1);
+        board[i][j] = word[k];
+        return res;
+    }
+
 
     /**
      * 翻转单词顺序
@@ -860,6 +1380,51 @@ class Node {
         this.val = val;
         this.next = null;
         this.random = null;
+    }
+}
+
+/**
+ * 数据流中的中位数
+ */
+class MedianFinder {
+
+    private List<Integer> list;
+
+    private int length;
+
+    /**
+     * initialize your data structure here.
+     */
+    public MedianFinder() {
+        list = new ArrayList<>();
+        length = 0;
+    }
+
+    public void addNum(int num) {
+        list.add(num);
+        length += 1;
+        if (length == 1) {
+            return;
+        }
+        for (int i = length - 1; i >= 0; i--) {
+            if (i > 0 && list.get(i - 1) > num) {
+                list.set(i, list.get(i - 1));
+            } else {
+                list.set(i, num);
+                break;
+            }
+        }
+
+    }
+
+    public double findMedian() {
+        if (length % 2 == 0) {
+            System.out.println("偶数");
+            System.out.println(list.get(length / 2) + list.get(length / 2 - 1));
+            return (list.get(length / 2) + list.get(length / 2 - 1)) / 2.0;
+        } else {
+            return list.get(length / 2);
+        }
     }
 }
 
