@@ -12,7 +12,73 @@ public class TestMain {
     }
 
     /**
+     * 圆圈中最后剩下的数字
+     * @param n
+     * @param m
+     * @return
+     */
+    public int lastRemaining(int n, int m) {
+        int x = 0;
+        for (int i = 2; i <= n; i++) {
+            x = (x + m) % i;
+        }
+        return x;
+    }
+
+    /**
+     * 和为s的连续正数序列
+     *
+     * @param target
+     * @return
+     */
+    public int[][] findContinuousSequence(int target) {
+        List<int[]> res = new ArrayList<>();
+        int left = 1;
+        int right = 2;
+        int sum = 3;
+        while (left < right) {
+            if (sum == target) {
+                int[] tempArr = new int[right - left + 1];
+                for (int i = left; i <= right; i++) {
+                    tempArr[i - left] = i;
+                }
+                res.add(tempArr);
+            }
+            if (sum < target) {
+                right++;
+                sum += right;
+            } else {
+                sum -= left;
+                left++;
+            }
+        }
+        return res.toArray(new int[0][]);
+    }
+
+    /**
+     * 剪绳子
+     *
+     * @param n
+     * @return
+     */
+    public int cuttingRope(int n) {
+        if (n <= 3) {
+            return n - 1;
+        }
+        int x = n / 3;
+        int b = n % 3;
+        if (b == 0) {
+            return (int) Math.pow(3, x);
+        }
+        if (b == 1) {
+            return (int) Math.pow(3, x - 1) * 4;
+        }
+        return (int) Math.pow(3, x) * 2;
+    }
+
+    /**
      * 构建乘积数组
+     *
      * @param a
      * @return
      */
@@ -39,6 +105,7 @@ public class TestMain {
 
     /**
      * 数组中出现次数超过一半的数字
+     *
      * @param nums
      * @return
      */
