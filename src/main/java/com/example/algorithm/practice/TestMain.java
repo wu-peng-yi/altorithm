@@ -4,15 +4,210 @@ import com.example.algorithm.linkedlist.ListNode;
 
 import java.util.*;
 
+class Codec {
+
+    // Encodes a tree to a single string.
+    public String serialize(TreeNode root) {
+        Deque<TreeNode> queue = new LinkedList<>();
+        if (root == null) {
+            return "";
+        }
+        StringBuilder res = new StringBuilder();
+        res.append("[");
+        queue.add(root);
+        while (!queue.isEmpty()) {
+            TreeNode currentNode = queue.poll();
+            if (currentNode != null) {
+                res.append(currentNode.val).append(",");
+                queue.add(currentNode.left);
+                queue.add(currentNode.right);
+            } else {
+                res.append("null,");
+            }
+        }
+        res.substring(0, res.length() - 1);
+        res.append("]");
+        return res.toString();
+    }
+
+    // Decodes your encoded data to tree.
+    public TreeNode deserialize(String data) {
+        if ("".equals(data)) {
+            return null;
+        }
+        String[] valArr = data.substring(1, data.length() - 1).split(",");
+        TreeNode root = new TreeNode(Integer.parseInt(valArr[0]));
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(root);
+        int index = 1;
+        while (!queue.isEmpty()) {
+            TreeNode currNode = queue.poll();
+            if (!"null".equals(valArr[index])) {
+                currNode.left = new TreeNode(Integer.parseInt(valArr[index]));
+                queue.add(currNode.left);
+            }
+            index++;
+            if (!"null".equals(valArr[index])) {
+                currNode.right = new TreeNode(Integer.parseInt(valArr[index]));
+                queue.add(currNode.right);
+            }
+            index++;
+        }
+        return root;
+    }
+}
+
 public class TestMain {
 
     public static void main(String[] args) {
+
+        ArrayList<Object> objects = new ArrayList<>(10);
+        objects.add(2, "1");
+        System.out.println(objects.get(0));
         TestMain testMain = new TestMain();
-        System.out.println(testMain.myPow(2.000, 10));
+        System.out.println(testMain.strToInt("  4193 with words"));
+    }
+
+    public String[] permutation(String s) {
+        return null;
+    }
+
+    /**
+     * 滑动窗口的最大值
+     *
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        int length = nums.length;
+        if (length <= 0) {
+            return nums;
+        }
+        int[] res = new int[length - k + 1];
+        int index = 0;
+        Deque<Integer> deque = new LinkedList<>();
+        //窗口未生成
+        for (int i = 0; i < k; i++) {
+            while (!deque.isEmpty() && nums[i] > deque.peekLast()) {
+                deque.removeLast();
+            }
+            deque.addLast(nums[i]);
+        }
+        res[index++] = deque.peekFirst();
+        //生成窗口后
+        for (int i = k; i < length; i++) {
+            if (deque.peekFirst() == nums[i - k]) {
+                deque.removeFirst();
+            }
+            while (!deque.isEmpty() && nums[i] > deque.peekLast()) {
+                deque.removeLast();
+            }
+            deque.addLast(nums[i]);
+            res[index++] = deque.peekFirst();
+        }
+        return res;
+    }
+
+    public int strToInt(String str) {
+        str = str.trim();
+        StringBuffer sb = new StringBuffer();
+        int index = 0;
+        if (str.charAt(0) == '-') {
+            index++;
+            sb.append("-");
+        } else if (str.charAt(0) == '+') {
+            index++;
+        }
+        for (int i = index; i < str.length(); i++) {
+            char c = str.charAt(i);
+            if (c >= '0' && c <= '9') {
+                sb.append(c);
+                if (Integer.valueOf(Integer.parseInt(sb.toString())) >= Integer.MAX_VALUE || Integer.valueOf(Integer.parseInt(sb.toString())) <= Integer.MIN_VALUE) {
+                    break;
+                }
+            } else {
+                break;
+            }
+        }
+        if (sb.length() == 0 || (sb.length() == 1 && (sb.charAt(0) == '-'))) {
+            return 0;
+        }
+        return Integer.valueOf(sb.toString());
+    }
+
+    /**
+     * 栈的压入，弹出序列
+     *
+     * @param pushed
+     * @param popped
+     * @return
+     */
+    public boolean validateStackSequences(int[] pushed, int[] popped) {
+        Stack<Integer> stack = new Stack<>();
+        int i = 0;
+        for (int num : pushed) {
+            stack.push(num);
+            while (!stack.isEmpty() && popped[i] == stack.peek()) {
+                stack.pop();
+                i++;
+            }
+        }
+        return stack.isEmpty();
+    }
+
+    /**
+     * 顺时针打印矩阵
+     *
+     * @param matrix
+     * @return
+     */
+    public int[] spiralOrder(int[][] matrix) {
+        if (matrix == null || matrix.length == 0) {
+            return new int[0];
+        }
+        int[] res = new int[matrix.length * matrix[0].length];
+        int l = 0;
+        int t = 0;
+        int r = matrix[0].length - 1;
+        int b = matrix.length - 1;
+        int index = 0;
+        while (true) {
+            // 从左到右
+            for (int i = l; i <= r; i++) {
+                res[index++] = matrix[t][i];
+            }
+            if (++t > b) {
+                break;
+            }
+            // 从上到下
+            for (int i = t; i <= b; i++) {
+                res[index++] = matrix[r][i];
+            }
+            if (--r < l) {
+                break;
+            }
+            // 从右到左
+            for (int i = r; i >= l; i--) {
+                res[index++] = matrix[b][i];
+            }
+            if (--b < t) {
+                break;
+            }
+            // 从下到上
+            for (int i = b; i >= t; i--) {
+                res[index++] = matrix[i][l];
+            }
+            if (++l > r) {
+                break;
+            }
+        }
+        return res;
     }
 
     /**
      * 圆圈中最后剩下的数字
+     *
      * @param n
      * @param m
      * @return
